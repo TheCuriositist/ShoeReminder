@@ -2,9 +2,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Footprints, Calendar, Smartphone, QrCode } from 'lucide-react';
-import { QRCodeSVG } from 'qrcode.react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Footprints, Calendar, Smartphone } from 'lucide-react';
 
 const EVENT_CONFIG = {
     title: "Get New Shoes",
@@ -135,39 +133,6 @@ export function ShoeReminder() {
                             Google Calendar
                         </a>
                     </Button>
-
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <Button
-                                variant="outline"
-                                className="w-full border-gray-200 text-gray-700 hover:bg-gray-50 py-6"
-                            >
-                                <QrCode className="mr-2 h-5 w-5" />
-                                QR Code
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-md">
-                            <DialogHeader>
-                                <DialogTitle>Scan to Add Event</DialogTitle>
-                                <DialogDescription>
-                                    Scan this QR code with your mobile device to add the event to your calendar.
-                                </DialogDescription>
-                            </DialogHeader>
-                            <div className="flex justify-center p-6">
-                                <QRCodeSVG
-                                    value={buildICSContent(
-                                        formatDateAllDay(targetDate),
-                                        formatDateAllDay(endDate),
-                                        `${months} Month ${EVENT_CONFIG.title}`,
-                                        EVENT_CONFIG.description,
-                                        EVENT_CONFIG.location
-                                    )}
-                                    size={256}
-                                    level="H"
-                                />
-                            </div>
-                        </DialogContent>
-                    </Dialog>
                 </div>
             </CardContent>
         </Card>
