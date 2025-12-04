@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Footprints, Calendar, Smartphone } from 'lucide-react';
+import { Footprints, Calendar, Smartphone, QrCode } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const EVENT_CONFIG = {
     title: "Get New Shoes",
@@ -26,13 +28,13 @@ export function ShoeReminder() {
         return `${year}${month}${day}`;
     };
 
-    const handleDownloadICS = () => {
+    const generateICSContent = () => {
         const months = parseInt(monthsToAdd);
         const dynamicTitle = `${months} Month ${EVENT_CONFIG.title}`;
         const startStr = formatDateAllDay(targetDate);
         const endStr = formatDateAllDay(endDate);
 
-        const icsContent = [
+        return [
             'BEGIN:VCALENDAR',
             'VERSION:2.0',
             'PRODID:-//ShoeReminder//EN',
@@ -47,6 +49,11 @@ export function ShoeReminder() {
             'END:VEVENT',
             'END:VCALENDAR'
         ].join('\r\n');
+    };
+
+    const handleDownloadICS = () => {
+        const months = parseInt(monthsToAdd);
+        const icsContent = generateICSContent();
 
         const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
         const url = URL.createObjectURL(blob);
@@ -127,6 +134,33 @@ export function ShoeReminder() {
                             Google Calendar
                         </a>
                     </Button>
+
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button
+                                variant="outline"
+                                className="w-full border-gray-200 text-gray-700 hover:bg-gray-50 py-6"
+                            >
+                                <QrCode className="mr-2 h-5 w-5" />
+                                QR Code
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-md">
+                            <DialogHeader>
+                                <DialogTitle>Scan to Add Event</DialogTitle>
+                                <DialogDescription>
+                                    Scan this QR code with your mobile device to add the event to your calendar.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="flex justify-center p-6">
+                                <QRCodeSVG
+                                    value={generateICSContent()}
+                                    size={256}
+                                    level="H"
+                                />
+                            </div>
+                        </DialogContent>
+                    </Dialog>
                 </div>
             </CardContent>
         </Card>
