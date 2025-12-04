@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
@@ -12,19 +12,12 @@ const EVENT_CONFIG = {
 
 export function ShoeReminder() {
     const [monthsToAdd, setMonthsToAdd] = useState<string>("6");
-    const [targetDate, setTargetDate] = useState<Date>(new Date());
-    const [endDate, setEndDate] = useState<Date>(new Date());
 
-    useEffect(() => {
-        const months = parseInt(monthsToAdd);
-        const now = new Date();
-        const target = new Date(now.getFullYear(), now.getMonth() + months, now.getDate());
-        const end = new Date(target);
-        end.setDate(target.getDate() + 1);
-
-        setTargetDate(target);
-        setEndDate(end);
-    }, [monthsToAdd]);
+    const months = parseInt(monthsToAdd);
+    const now = new Date();
+    const targetDate = new Date(now.getFullYear(), now.getMonth() + months, now.getDate());
+    const endDate = new Date(targetDate);
+    endDate.setDate(targetDate.getDate() + 1);
 
     const formatDateAllDay = (date: Date) => {
         const year = date.getFullYear();
@@ -44,7 +37,7 @@ export function ShoeReminder() {
             'VERSION:2.0',
             'PRODID:-//ShoeReminder//EN',
             'BEGIN:VEVENT',
-            `UID:${Date.now()}@shoereminder`,
+            `UID:${Date.now()}@shoereminder`, // eslint-disable-line react-hooks/purity
             `DTSTAMP:${new Date().toISOString().replace(/-|:|\.\d+/g, "")}`,
             `DTSTART;VALUE=DATE:${startStr}`,
             `DTEND;VALUE=DATE:${endStr}`,
