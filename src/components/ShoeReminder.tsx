@@ -12,6 +12,27 @@ const EVENT_CONFIG = {
     location: "11910 Parklawn Dr R, Rockville, MD 20852",
 };
 
+function buildICSContent(startStr: string, endStr: string, title: string, description: string, location: string) {
+    const uid = `${Date.now()}@shoereminder`;
+    const dtstamp = new Date().toISOString().replace(/-|:|\.\d+/g, "");
+
+    return [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//ShoeReminder//EN',
+        'BEGIN:VEVENT',
+        `UID:${uid}`,
+        `DTSTAMP:${dtstamp}`,
+        `DTSTART;VALUE=DATE:${startStr}`,
+        `DTEND;VALUE=DATE:${endStr}`,
+        `SUMMARY:${title}`,
+        `DESCRIPTION:${description.replace(/\n/g, '\\n')}`,
+        `LOCATION:${location}`,
+        'END:VEVENT',
+        'END:VCALENDAR'
+    ].join('\r\n');
+}
+
 export function ShoeReminder() {
     const [monthsToAdd, setMonthsToAdd] = useState<string>("6");
 
@@ -28,32 +49,12 @@ export function ShoeReminder() {
         return `${year}${month}${day}`;
     };
 
-    const generateICSContent = () => {
+    const handleDownloadICS = () => {
         const months = parseInt(monthsToAdd);
         const dynamicTitle = `${months} Month ${EVENT_CONFIG.title}`;
         const startStr = formatDateAllDay(targetDate);
         const endStr = formatDateAllDay(endDate);
-
-        return [
-            'BEGIN:VCALENDAR',
-            'VERSION:2.0',
-            'PRODID:-//ShoeReminder//EN',
-            'BEGIN:VEVENT',
-            `UID:${Date.now()}@shoereminder`, // eslint-disable-line react-hooks/purity
-            `DTSTAMP:${new Date().toISOString().replace(/-|:|\.\d+/g, "")}`,
-            `DTSTART;VALUE=DATE:${startStr}`,
-            `DTEND;VALUE=DATE:${endStr}`,
-            `SUMMARY:${dynamicTitle}`,
-            `DESCRIPTION:${EVENT_CONFIG.description.replace(/\n/g, '\\n')}`,
-            `LOCATION:${EVENT_CONFIG.location}`,
-            'END:VEVENT',
-            'END:VCALENDAR'
-        ].join('\r\n');
-    };
-
-    const handleDownloadICS = () => {
-        const months = parseInt(monthsToAdd);
-        const icsContent = generateICSContent();
+        const icsContent = buildICSContent(startStr, endStr, dynamicTitle, EVENT_CONFIG.description, EVENT_CONFIG.location);
 
         const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
         const url = URL.createObjectURL(blob);
@@ -154,7 +155,13 @@ export function ShoeReminder() {
                             </DialogHeader>
                             <div className="flex justify-center p-6">
                                 <QRCodeSVG
-                                    value={generateICSContent()}
+                                    value={buildICSContent(
+                                        formatDateAllDay(targetDate),
+                                        formatDateAllDay(endDate),
+                                        `${months} Month ${EVENT_CONFIG.title}`,
+                                        EVENT_CONFIG.description,
+                                        EVENT_CONFIG.location
+                                    )}
                                     size={256}
                                     level="H"
                                 />
