@@ -6,14 +6,16 @@ import { BrandSEO } from './components/BrandSEO';
 
 function App() {
   return (
-    <div className="min-h-dvh w-full overflow-x-hidden bg-gradient-to-br from-background to-muted/50 flex flex-col items-center justify-center p-4">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<ShoeReminder />} />
-          <Route path="/api/v1/reminders" element={<GeneratePage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
+    <div className="min-h-dvh w-full overflow-x-hidden bg-gradient-to-br from-background to-muted/50 flex flex-col items-center p-4">
+      <main className="flex-1 flex items-center justify-center w-full">
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<ShoeReminder />} />
+            <Route path="/api/v1/reminders" element={<GeneratePage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </main>
       <Footer />
       <BrandSEO />
     </div>
