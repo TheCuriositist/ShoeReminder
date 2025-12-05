@@ -2,9 +2,12 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Footprints, Calendar, Smartphone, AlertCircle } from 'lucide-react';
+import { Footprints, AlertCircle } from 'lucide-react';
 import { QRCodeModal } from '@/components/QRCodeModal';
-import { EVENT_CONFIG, buildICSContent, formatDateAllDay, getTargetDates, generateGoogleCalendarUrl } from '@/lib/calendar';
+import { EVENT_CONFIG, buildICSContent, formatDateAllDay, getTargetDates, generateGoogleCalendarUrl, getReminderTitle } from '@/lib/calendar';
+import { downloadFile } from '@/lib/utils';
+import { useKeyDown } from '@/hooks/useKeyDown';
+import { ReminderActions } from '@/components/ReminderActions';
 import { z } from 'zod';
 
 const MIN_MONTHS = 1;
@@ -22,7 +25,7 @@ export function GeneratePage() {
     const hasError = !result.success && monthsParam !== null;
 
     const { targetDate, endDate } = getTargetDates(months);
-    const dynamicTitle = `${months} Month ${EVENT_CONFIG.title}`;
+    const dynamicTitle = getReminderTitle(months);
 
     const [showQR, setShowQR] = useState(false);
 
@@ -34,26 +37,11 @@ export function GeneratePage() {
 
     const handleDownloadICS = () => {
         const icsContent = getICSData();
-        const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `reminder-${months}-months.ics`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        downloadFile(icsContent, `reminder-${months}-months.ics`, 'text/calendar;charset=utf-8');
     };
 
-    useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
-                event.preventDefault();
-                setShowQR(prev => !prev);
-            }
-        };
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, []);
+    useKeyDown('k', () => setShowQR(prev => !prev), { metaOrCtrl: true, preventDefault: true });
+
 
     useEffect(() => {
         const format = searchParams.get('format');
@@ -106,26 +94,7 @@ export function GeneratePage() {
                         {targetDate.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                     </div>
 
-                    <div className="space-y-3">
-                        <Button
-                            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-6"
-                            onClick={handleDownloadICS}
-                        >
-                            <Smartphone className="mr-2 h-5 w-5" />
-                            Apple / Outlook / Mobile
-                        </Button>
-
-                        <Button
-                            variant="outline"
-                            className="w-full border-gray-200 text-gray-700 hover:bg-gray-50 py-6"
-                            asChild
-                        >
-                            <a href={googleUrl} target="_blank" rel="noopener noreferrer">
-                                <Calendar className="mr-2 h-5 w-5" />
-                                Add to Google Calendar
-                            </a>
-                        </Button>
-                    </div>
+                    <ReminderActions onDownload={handleDownloadICS} googleUrl={googleUrl} />
                 </CardContent>
             </Card>
 

@@ -4,6 +4,10 @@ export const EVENT_CONFIG = {
     location: "11910 Parklawn Dr R, Rockville, MD 20852",
 };
 
+export function getReminderTitle(months: number) {
+    return `${months} Month ${EVENT_CONFIG.title}`;
+}
+
 export function buildICSContent(startStr: string, endStr: string, title: string, description: string, location: string) {
     const uid = `${Date.now()}@shoereminder`;
     const dtstamp = new Date().toISOString().replace(/-|:|\.\d+/g, "");

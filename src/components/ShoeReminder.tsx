@@ -1,61 +1,36 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { QRCodeModal } from './QRCodeModal';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Footprints, Calendar, Smartphone } from 'lucide-react';
-import { EVENT_CONFIG, buildICSContent, formatDateAllDay, getTargetDates, generateGoogleCalendarUrl } from '@/lib/calendar';
+import { Footprints } from 'lucide-react';
+import { EVENT_CONFIG, buildICSContent, formatDateAllDay, getTargetDates, generateGoogleCalendarUrl, getReminderTitle } from '@/lib/calendar';
+import { downloadFile } from '@/lib/utils';
+import { useKeyDown } from '@/hooks/useKeyDown';
+import { ReminderActions } from './ReminderActions';
 
 export function ShoeReminder() {
     const [monthsToAdd, setMonthsToAdd] = useState<string>("6");
+    const [showQR, setShowQR] = useState(false);
 
     const months = parseInt(monthsToAdd);
     const { targetDate, endDate } = getTargetDates(months);
-
-    const handleDownloadICS = () => {
-        const months = parseInt(monthsToAdd);
-        const dynamicTitle = `${months} Month ${EVENT_CONFIG.title}`;
-        const startStr = formatDateAllDay(targetDate);
-        const endStr = formatDateAllDay(endDate);
-        const icsContent = buildICSContent(startStr, endStr, dynamicTitle, EVENT_CONFIG.description, EVENT_CONFIG.location);
-
-        const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `reminder-${months}-months.ics`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
-
-    const getGoogleCalendarUrl = () => {
-        const months = parseInt(monthsToAdd);
-        const dynamicTitle = `${months} Month ${EVENT_CONFIG.title}`;
-        return generateGoogleCalendarUrl(targetDate, endDate, dynamicTitle);
-    };
-
-    const [showQR, setShowQR] = useState(false);
-
-    useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
-                event.preventDefault();
-                setShowQR(prev => !prev);
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, []);
+    const dynamicTitle = getReminderTitle(months);
 
     const getICSData = () => {
-        const months = parseInt(monthsToAdd);
-        const dynamicTitle = `${months} Month ${EVENT_CONFIG.title}`;
         const startStr = formatDateAllDay(targetDate);
         const endStr = formatDateAllDay(endDate);
         return buildICSContent(startStr, endStr, dynamicTitle, EVENT_CONFIG.description, EVENT_CONFIG.location);
-    }
+    };
+
+    const handleDownloadICS = () => {
+        const icsContent = getICSData();
+        downloadFile(icsContent, `reminder-${months}-months.ics`, 'text/calendar;charset=utf-8');
+    };
+
+    const googleUrl = generateGoogleCalendarUrl(targetDate, endDate, dynamicTitle);
+
+    useKeyDown('k', () => setShowQR(prev => !prev), { metaOrCtrl: true, preventDefault: true });
+
 
     return (
         <>
@@ -92,26 +67,7 @@ export function ShoeReminder() {
                         {targetDate.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                     </div>
 
-                    <div className="space-y-3">
-                        <Button
-                            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-6"
-                            onClick={handleDownloadICS}
-                        >
-                            <Smartphone className="mr-2 h-5 w-5" />
-                            Apple / Outlook / Mobile
-                        </Button>
-
-                        <Button
-                            variant="outline"
-                            className="w-full border-gray-200 text-gray-700 hover:bg-gray-50 py-6"
-                            asChild
-                        >
-                            <a href={getGoogleCalendarUrl()} target="_blank" rel="noopener noreferrer">
-                                <Calendar className="mr-2 h-5 w-5" />
-                                Google Calendar
-                            </a>
-                        </Button>
-                    </div>
+                    <ReminderActions onDownload={handleDownloadICS} googleUrl={googleUrl} />
                 </CardContent>
             </Card>
 
