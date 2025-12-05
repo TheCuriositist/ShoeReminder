@@ -26,28 +26,14 @@ export function GeneratePage() {
 
     const [showQR, setShowQR] = useState(false);
 
-    useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
-                event.preventDefault();
-                setShowQR(prev => !prev);
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, []);
-
-    useEffect(() => {
-        const format = searchParams.get('format');
-        if (format === 'ics') {
-            handleDownloadICS();
-        }
-    }, [searchParams]);
+    const getICSData = () => {
+        const startStr = formatDateAllDay(targetDate);
+        const endStr = formatDateAllDay(endDate);
+        return buildICSContent(startStr, endStr, dynamicTitle, EVENT_CONFIG.description, EVENT_CONFIG.location);
+    };
 
     const handleDownloadICS = () => {
         const icsContent = getICSData();
-
         const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
@@ -58,11 +44,24 @@ export function GeneratePage() {
         document.body.removeChild(link);
     };
 
-    const getICSData = () => {
-        const startStr = formatDateAllDay(targetDate);
-        const endStr = formatDateAllDay(endDate);
-        return buildICSContent(startStr, endStr, dynamicTitle, EVENT_CONFIG.description, EVENT_CONFIG.location);
-    };
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+                event.preventDefault();
+                setShowQR(prev => !prev);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
+    useEffect(() => {
+        const format = searchParams.get('format');
+        if (format === 'ics') {
+            handleDownloadICS();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchParams]);
 
     const googleUrl = generateGoogleCalendarUrl(targetDate, endDate, dynamicTitle);
 
