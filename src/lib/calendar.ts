@@ -1,7 +1,9 @@
+import { EVENT_TITLE, EVENT_DESCRIPTION, EVENT_LOCATION } from '@/config/branding';
+
 export const EVENT_CONFIG = {
-    title: "Get New Shoes",
-    description: "Time to replace your running shoes.\n\nStore Phone: (301) 881-0021\nStore Hours: \nMon-Sat: 10am - 6pm\nSun: 12pm - 4pm",
-    location: "11910 Parklawn Dr R, Rockville, MD 20852",
+    title: EVENT_TITLE,
+    description: EVENT_DESCRIPTION,
+    location: EVENT_LOCATION,
 };
 
 export function getReminderTitle(months: number) {
