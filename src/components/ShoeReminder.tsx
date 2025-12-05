@@ -34,7 +34,7 @@ export function ShoeReminder() {
 
     return (
         <>
-            <Card className="w-[90%] max-w-[400px] shadow-2xl border-0 bg-white/90 backdrop-blur-sm">
+            <Card className="w-[90%] max-w-[400px] shadow-2xl border bg-white/90 backdrop-blur-sm">
                 <CardHeader className="text-center pb-2">
                     <div className="flex justify-center mb-4">
                         <Footprints className="h-12 w-12 text-primary" />
