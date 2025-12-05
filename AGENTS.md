@@ -10,7 +10,7 @@
 ## Testing
 **Use Vitest** for all testing (unit, integration, component tests).
 
-- Run tests: `bun run test run` or `bun vitest run`
+- Run tests: `bun run vitest run` or `bun vitest run`
 - Test configuration is in `vitest.config.ts`
 - Test setup is in `src/test/setup.ts`
 - Follow industry best practices:

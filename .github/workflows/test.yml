@@ -22,4 +22,4 @@ jobs:
         run: bun install
 
       - name: Run tests
-        run: bun run test run
+        run: bun run vitest run
