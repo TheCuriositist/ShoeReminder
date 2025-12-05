@@ -54,7 +54,7 @@ export function ShoeReminder() {
                                 <SelectValue placeholder="Select months" />
                             </SelectTrigger>
                             <SelectContent>
-                                {[3, 4, 5, 6, 7, 8].map((month) => (
+                                {[3, 4, 5, 6, 7, 8, 10, 12].map((month) => (
                                     <SelectItem key={month} value={month.toString()}>
                                         {month} Months
                                     </SelectItem>
