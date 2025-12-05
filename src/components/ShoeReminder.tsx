@@ -37,20 +37,20 @@ export function ShoeReminder() {
             <Card className="w-[90%] max-w-[400px] shadow-2xl border-0 bg-white/90 backdrop-blur-sm">
                 <CardHeader className="text-center pb-2">
                     <div className="flex justify-center mb-4">
-                        <Footprints className="h-12 w-12 text-indigo-600" />
+                        <Footprints className="h-12 w-12 text-primary" />
                     </div>
-                    <CardTitle className="text-2xl font-bold text-gray-800">Get New Shoes</CardTitle>
-                    <CardDescription className="text-gray-600">
+                    <CardTitle className="text-2xl font-bold text-foreground">Get New Shoes</CardTitle>
+                    <CardDescription className="text-muted-foreground">
                         Select a timeframe for your reminder.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                     <div className="space-y-2">
-                        <label htmlFor="month-select" className="text-sm font-medium text-gray-700 ml-1">
+                        <label htmlFor="month-select" className="text-sm font-medium text-foreground ml-1">
                             Remind me in:
                         </label>
                         <Select value={monthsToAdd} onValueChange={setMonthsToAdd}>
-                            <SelectTrigger id="month-select" className="w-full bg-gray-50 border-gray-200">
+                            <SelectTrigger id="month-select" className="w-full bg-muted/50 border-input">
                                 <SelectValue placeholder="Select months" />
                             </SelectTrigger>
                             <SelectContent>
@@ -63,7 +63,7 @@ export function ShoeReminder() {
                         </Select>
                     </div>
 
-                    <div className="bg-indigo-50 text-indigo-700 p-3 rounded-lg text-center font-bold text-lg">
+                    <div className="bg-primary/10 text-primary p-3 rounded-lg text-center font-bold text-lg">
                         {targetDate.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                     </div>
 

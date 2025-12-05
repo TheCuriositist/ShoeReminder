@@ -25,7 +25,7 @@ export function QRCodeModal({ isOpen, onClose, value, title = "Scan to Add to Ca
                     </DialogDescription>
                 </DialogHeader>
                 <div className="flex items-center justify-center p-6">
-                    <div className="bg-white p-4 rounded-xl shadow-inner border border-gray-100">
+                    <div className="bg-white p-4 rounded-xl shadow-inner border border-border">
                         <QRCodeSVG
                             value={value}
                             size={256}

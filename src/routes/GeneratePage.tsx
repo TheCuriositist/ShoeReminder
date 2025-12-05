@@ -58,16 +58,16 @@ export function GeneratePage() {
             <Card className="w-[90%] max-w-[400px] shadow-2xl border-0 bg-white/90 backdrop-blur-sm">
                 <CardHeader className="text-center pb-2">
                     <div className="flex justify-center mb-4">
-                        <AlertCircle className="h-12 w-12 text-red-600" />
+                        <AlertCircle className="h-12 w-12 text-destructive" />
                     </div>
-                    <CardTitle className="text-2xl font-bold text-gray-800">Invalid Request</CardTitle>
-                    <CardDescription className="text-gray-600">
+                    <CardTitle className="text-2xl font-bold text-foreground">Invalid Request</CardTitle>
+                    <CardDescription className="text-muted-foreground">
                         Months must be between {MIN_MONTHS} and {MAX_MONTHS}.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <Button
-                        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
+                        className="w-full"
                         onClick={() => window.location.href = '/api/v1/reminders?months=6'}
                     >
                         Use Default (6 months)
@@ -82,15 +82,15 @@ export function GeneratePage() {
             <Card className="w-[90%] max-w-[400px] shadow-2xl border-0 bg-white/90 backdrop-blur-sm">
                 <CardHeader className="text-center pb-2">
                     <div className="flex justify-center mb-4">
-                        <Footprints className="h-12 w-12 text-indigo-600" />
+                        <Footprints className="h-12 w-12 text-primary" />
                     </div>
-                    <CardTitle className="text-2xl font-bold text-gray-800">Reminder Ready</CardTitle>
-                    <CardDescription className="text-gray-600">
+                    <CardTitle className="text-2xl font-bold text-foreground">Reminder Ready</CardTitle>
+                    <CardDescription className="text-muted-foreground">
                         Here is your {months} month reminder link.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                    <div className="bg-indigo-50 text-indigo-700 p-3 rounded-lg text-center font-bold text-lg">
+                    <div className="bg-primary/10 text-primary p-3 rounded-lg text-center font-bold text-lg">
                         {targetDate.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                     </div>
 
